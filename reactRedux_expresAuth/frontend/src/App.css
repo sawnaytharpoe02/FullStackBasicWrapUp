@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400..800&display=swap');
+
+
+#root {
+  max-width: 1280px;
+  box-sizing: border-box;
+}
+
+* {
+  font-family: "Baloo 2", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: inherit
+}

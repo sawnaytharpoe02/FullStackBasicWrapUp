@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
+  "include": ["*.ts", "script.js"],
+  "exclude": ["node_modules"]
+}
