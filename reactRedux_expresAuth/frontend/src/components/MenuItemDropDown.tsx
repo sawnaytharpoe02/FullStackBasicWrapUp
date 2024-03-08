@@ -1,41 +1,76 @@
-import { ReactNode, useState } from "react";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { useMemo, useState } from "react";
 import {
   ListItemButton,
   ListItemIcon,
   Collapse,
   ListItemText,
-  ListItem,
+  Popover,
+  Tooltip,
+  IconButton,
+  Box,
 } from "@mui/material";
 import { Icon } from "@iconify/react";
-import { Link } from "react-router-dom";
+import MenuItem from "./MenuItem";
+import { useLocation } from "react-router-dom";
 
 interface Menu {
   name: string;
   href: string;
-  icon: ReactNode;
+  icon: string;
 }
 
 interface Props {
   menus: Menu[];
   isOpenDrawer: boolean;
+  menuIcon: string;
+  menuLabel: string;
 }
 
-const MenuItemDropDown = ({ menus, isOpenDrawer }: Props) => {
+const MenuItemDropDown = ({
+  menus,
+  isOpenDrawer,
+  menuIcon,
+  menuLabel,
+}: Props) => {
+  const { pathname } = useLocation();
+  const isActiveSubmenu = useMemo(
+    () => (menus.find((menu) => menu.href === pathname) ? true : false),
+    [pathname, menus]
+  );
+
   const [subMenuOpen, setSubMenuOpen] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenSubMenu = () => {
     setSubMenuOpen(() => !subMenuOpen);
   };
 
-  return (
-    <>
+  const handleClickPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const openPopover = Boolean(anchorEl);
+  const id = openPopover ? "simple-popover" : undefined;
+
+  return isOpenDrawer ? (
+    <Box sx={{ textAlign: "center" }}>
       <ListItemButton
         onClick={handleOpenSubMenu}
         sx={{
           minHeight: 48,
           justifyContent: isOpenDrawer ? "initial" : "center",
           px: 2.5,
+          borderRadius: ".4rem",
+          backgroundColor: isActiveSubmenu
+            ? "#F0FFF4"
+            : subMenuOpen
+            ? "#F4F6F8"
+            : "transparent",
+          color: "#161C24",
         }}>
         <ListItemIcon
           sx={{
@@ -43,39 +78,84 @@ const MenuItemDropDown = ({ menus, isOpenDrawer }: Props) => {
             mr: isOpenDrawer ? 3 : "auto",
             justifyContent: "center",
           }}>
-          <Icon icon="lets-icons:arhive-duotone" fontSize={25} />
+          <Icon
+            icon={menuIcon}
+            fontSize={25}
+            color={
+              isActiveSubmenu ? "#00A76F" : subMenuOpen ? "#454F5B" : "#637381"
+            }
+          />
         </ListItemIcon>
-        <ListItemText primary="Inbox" sx={{ opacity: isOpenDrawer ? 1 : 0 }} />
-        {subMenuOpen ? <ExpandLess /> : <ExpandMore />}
+        <ListItemText
+          primary={menuLabel}
+          sx={{
+            color: isActiveSubmenu ? "#00A76F" : subMenuOpen ? "#454F5B" : "",
+          }}
+        />
+        {subMenuOpen ? (
+          <Icon
+            icon="lets-icons:expand-down-light"
+            color={
+              isActiveSubmenu ? "#00A76F" : subMenuOpen ? "#161C24" : "#637381"
+            }
+          />
+        ) : (
+          <Icon icon="lets-icons:expand-right-light" color="#637381" />
+        )}
       </ListItemButton>
       <Collapse in={subMenuOpen} timeout="auto" unmountOnExit>
         {menus.map((link, index) => (
-          <Link to={link.href} key={index}>
-            <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: isOpenDrawer ? "initial" : "center",
-                  px: 2.5,
-                }}>
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: isOpenDrawer ? 3 : "auto",
-                    justifyContent: "center",
-                  }}>
-                  {link.icon}
-                </ListItemIcon>
-                <ListItemText
-                  primary={link.name}
-                  sx={{ opacity: isOpenDrawer ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          </Link>
+          <MenuItem key={index} link={link} isOpenDrawer={isOpenDrawer} />
         ))}
       </Collapse>
-    </>
+    </Box>
+  ) : (
+    <Box sx={{ textAlign: "center" }}>
+      <Tooltip title={menuLabel} placement="right-start">
+        <IconButton
+          sx={{
+            minHeight: 48,
+            padding: "8px 15px",
+            borderRadius: "0.2rem",
+            justifyContent: isOpenDrawer ? "initial" : "center",
+            backgroundColor: isActiveSubmenu
+              ? "#F0FFF4"
+              : subMenuOpen
+              ? "#F4F6F8"
+              : "transparent",
+          }}
+          onClick={handleClickPopover}>
+          <Icon
+            icon={menuIcon}
+            fontSize={25}
+            color={
+              isActiveSubmenu ? "#00A76F" : subMenuOpen ? "#161C24" : "#637381"
+            }
+          />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        id={id}
+        open={openPopover}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorPosition={{
+          top: 75,
+          left: 77,
+        }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}>
+        {menus.map((link, index) => (
+          <MenuItem key={index} link={link} isOpenDrawer={isOpenDrawer} />
+        ))}
+      </Popover>
+    </Box>
   );
 };
 

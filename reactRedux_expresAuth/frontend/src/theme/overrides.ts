@@ -58,5 +58,39 @@ export const overrides = (): ThemeOptions["components"] => {
         },
       },
     },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          borderRight: "1px solid #C4CDD5",
+          borderRightStyle: "dashed",
+        },
+      },
+    },
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          borderStyle: "dashed",
+          borderColor: "#C4CDD5",
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          borderRadius: ".5rem",
+          backgroundColor: "rgba(255, 255, 255, 0.5)",
+          backdropFilter: "blur(10px)",
+          boxShadow: "rgba(0, 0, 0, 0.04) 0px 3px 10px",
+          padding: "0.3rem",
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        root: {
+          color: "#637381",
+        },
+      },
+    },
   };
 };

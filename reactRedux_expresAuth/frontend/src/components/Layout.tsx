@@ -4,7 +4,6 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import MuiDrawer from "@mui/material/Drawer";
 import {
   Box,
-  Divider,
   IconButton,
   Toolbar,
   Typography,
@@ -12,7 +11,6 @@ import {
   Button,
 } from "@mui/material";
 import { LuChevronsLeft, LuChevronsRight } from "react-icons/lu";
-import { Icon } from "@iconify/react";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hook";
@@ -37,9 +35,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: `calc(${theme.spacing(9)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
+    width: `calc(${theme.spacing(10)} + 1px)`,
   },
 });
 
@@ -58,7 +56,6 @@ const DrawerFooter = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   marginTop: "auto",
-  // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
@@ -75,6 +72,8 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   boxShadow: "none",
+  backgroundColor: "rgba(255, 255, 255, 0.5)",
+  backdropFilter: "blur(10px)",
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
@@ -84,7 +83,7 @@ const AppBar = styled(MuiAppBar, {
     }),
   }),
   ...(!open && {
-    width: `calc(100% - (${theme.spacing(8)} + 1px))`,
+    width: `calc(100% - (${theme.spacing(10)} + 1px))`,
   }),
 }));
 
@@ -124,16 +123,42 @@ const Layout = ({ children }: Props) => {
     dispatch(setOpenDrawer(false));
   };
 
-  const Links = [
+  const LinksOne = [
     {
       name: "Menu",
       href: "/menu",
-      icon: <Icon icon="lets-icons:arhive-duotone" fontSize={25} />,
+      icon: "codicon:circle-filled",
     },
     {
       name: "Menu Category",
       href: "/menu-category",
-      icon: <Icon icon="lets-icons:pipe-duotone" fontSize={25} />,
+      icon: "codicon:circle-filled",
+    },
+  ];
+
+  const LinksTwo = [
+    {
+      name: "Page One",
+      href: "/page-one",
+      icon: "codicon:circle-filled",
+    },
+    {
+      name: "Page Two",
+      href: "/page-two",
+      icon: "codicon:circle-filled",
+    },
+  ];
+
+  const LinksThree = [
+    {
+      name: "Page Three",
+      href: "/page-three",
+      icon: "codicon:circle-filled",
+    },
+    {
+      name: "Page Four",
+      href: "/page-four",
+      icon: "codicon:circle-filled",
     },
   ];
 
@@ -141,7 +166,10 @@ const Layout = ({ children }: Props) => {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar open={isOpen}>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+          }}>
           <Typography variant="h6" noWrap component="div">
             Mini variant drawer
           </Typography>
@@ -156,13 +184,32 @@ const Layout = ({ children }: Props) => {
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={isOpen}>
-        <DrawerHeader sx={{ justifyContent: "flex-start", pl: 2 }}>
+        <DrawerHeader sx={{ justifyContent: "flex-start", pl: 3 }}>
           <img src="/logo.svg" width={30} />
         </DrawerHeader>
-        <Divider />
 
-        <List>
-          <MenuItemDropDown menus={Links} isOpenDrawer={isOpen} />
+        <List sx={{ padding: "10px" }}>
+          {/* App */}
+          <MenuItemDropDown
+            menus={LinksOne}
+            isOpenDrawer={isOpen}
+            menuIcon="lets-icons:arhive-duotone"
+            menuLabel="App"
+          />
+
+          <MenuItemDropDown
+            menus={LinksTwo}
+            isOpenDrawer={isOpen}
+            menuIcon="lets-icons:cloud-duotone"
+            menuLabel="App"
+          />
+
+          <MenuItemDropDown
+            menus={LinksThree}
+            isOpenDrawer={isOpen}
+            menuIcon="lets-icons:pipe-duotone"
+            menuLabel="App"
+          />
         </List>
 
         <DrawerFooter>
@@ -183,11 +230,7 @@ const Layout = ({ children }: Props) => {
               ...(!isOpen && { display: "none" }),
               color: `${theme.palette.primary.light}`,
             }}>
-            {theme.direction === "rtl" ? (
-              <LuChevronsRight />
-            ) : (
-              <LuChevronsLeft />
-            )}
+            <LuChevronsLeft />
           </IconButton>
         </DrawerFooter>
       </Drawer>
